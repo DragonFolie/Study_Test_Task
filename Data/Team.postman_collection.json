@@ -1,0 +1,127 @@
+{
+	"info": {
+		"_postman_id": "bcaed016-e520-4143-b92c-b406dcd484de",
+		"name": "Team",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Find All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/football/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"football",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/football/{Id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"football",
+						"{Id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new team",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \r\n        \"name\": \"Test\",\r\n        \"owner\": \"Test\",\r\n        \"transfer_fee\": 5,\r\n        \"balance\": 100000\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/football/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"football",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update team",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"id\": 4,\r\n        \"name\": \"Tes2t\",\r\n        \"owner\": \"Test\",\r\n        \"transfer_fee\": 5,\r\n        \"balance\": 100000\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/football/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"football",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete team by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/football/{Id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"football",
+						"{Id}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
