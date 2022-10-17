@@ -76,9 +76,8 @@ public  class PersonController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person){
 
-//        personService.updatePerson(person);
-//        return ResponseEntity.ok().build() ;
-        return new ResponseEntity<Person>( personService.updatePerson(person), HttpStatus.ACCEPTED);
+        personService.updatePerson(person);
+        return ResponseEntity.ok().build() ;
 
     }
 

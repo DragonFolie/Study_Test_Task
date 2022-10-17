@@ -397,41 +397,41 @@ public class PersonControllerTest {
 
 
 
-    @Test
-    public void updatePersonTestShouldReturnTrue() throws Exception {
-
-        Person RECORD_1 = new Person();
-        RECORD_1.setId(1L);
-        RECORD_1.setName("Test1");
-        RECORD_1.setSurname("Test1_2");
-        RECORD_1.setDate_of_birth("22 Years");
-
-        Person person = new Person();
-
-        person.setId(5L);
-        person.setName("Test2");
-        person.setSurname("Test2_2");
-        person.setDate_of_birth("55 Years");
-
-
-
-
-        Mockito.when(personService.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
-        Mockito.when(personService.addNewPerson(person)).thenReturn(person);
-
-
-
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/person/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(this.mapper.writeValueAsString(person));
-
-        mockMvc.perform(mockRequest)
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", is("Test2")));
-
-
-    }
+//    @Test
+//    public void updatePersonTestShouldReturnTrue() throws Exception {
+//
+//        Person RECORD_1 = new Person();
+//        RECORD_1.setId(1L);
+//        RECORD_1.setName("Test1");
+//        RECORD_1.setSurname("Test1_2");
+//        RECORD_1.setDate_of_birth("22 Years");
+//
+//        Person person = new Person();
+//
+//        person.setId(5L);
+//        person.setName("Test2");
+//        person.setSurname("Test2_2");
+//        person.setDate_of_birth("55 Years");
+//
+//
+//
+//
+//        Mockito.when(personService.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
+//        Mockito.when(personService.addNewPerson(person)).thenReturn(person);
+//
+//
+//
+//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/person/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .content(this.mapper.writeValueAsString(person));
+//
+//        mockMvc.perform(mockRequest)
+//                .andExpect(status().is2xxSuccessful())
+//                .andExpect(jsonPath("$.name", is("Test2")));
+//
+//
+//    }
 
 
 
