@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repository.PersonRepository;
 import com.service.PersonService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,11 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(PersonController.class)
 @TestPropertySource(locations="classpath:testApplication.properties")
 public class PersonControllerTest {
@@ -397,45 +402,92 @@ public class PersonControllerTest {
 
 
 
-//    @Test
-//    public void updatePersonTestShouldReturnTrue() throws Exception {
+    @Test
+    public void updatePersonTestShouldReturnTrue() throws Exception {
+
+        Person RECORD_1 = new Person();
+        RECORD_1.setId(1L);
+        RECORD_1.setName("Test1");
+        RECORD_1.setSurname("Test1_2");
+        RECORD_1.setDate_of_birth("22 Years");
+
+        Person person = new Person();
+        person.setId(5L);
+        person.setName("Test2");
+        person.setSurname("Test2_2");
+        person.setDate_of_birth("55 Years");
+
+
+
+
+        Mockito.when(personService.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
+        Mockito.when(personService.addNewPerson(person)).thenReturn(person);
+
+
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/person/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(person));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.name", is("Test2")));
+
+
+
 //
-//        Person RECORD_1 = new Person();
-//        RECORD_1.setId(1L);
-//        RECORD_1.setName("Test1");
-//        RECORD_1.setSurname("Test1_2");
-//        RECORD_1.setDate_of_birth("22 Years");
+//        PatientRecord RECORD_1 = new PatientRecord(1l, "Rayven Yor", 23, "Cebu Philippines");
+//        PatientRecord updatedRecord = PatientRecord.builder()
+//                .patientId(1l)
+//                .name("Rayven Zambo")
+//                .age(23)
+//                .address("Cebu Philippines")
+//                .build();
+//
+//        Mockito.when(patientRecordRepository.findById(RECORD_1.getPatientId())).thenReturn(Optional.of(RECORD_1));
+//        Mockito.when(patientRecordRepository.save(updatedRecord)).thenReturn(updatedRecord);
+//
+//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/patient")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .content(this.mapper.writeValueAsString(updatedRecord));
+//
+//        mockMvc.perform(mockRequest)
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$", notNullValue()))
+//                .andExpect(jsonPath("$.name", is("Rayven Zambo")));
+
+
+    }
+
+
+
+//    @Test
+//    public void deletePersonIfFound() throws Exception {
+//
+//
 //
 //        Person person = new Person();
-//
 //        person.setId(5L);
 //        person.setName("Test2");
 //        person.setSurname("Test2_2");
 //        person.setDate_of_birth("55 Years");
 //
+//        doReturn(Optional.of(person)).when(this.personService).findById(5L);
 //
-//
-//
-//        Mockito.when(personService.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
-//        Mockito.when(personService.addNewPerson(person)).thenReturn(person);
-//
-//
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/person/")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(this.mapper.writeValueAsString(person));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().is2xxSuccessful())
-//                .andExpect(jsonPath("$.name", is("Test2")));
-//
-//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/person/5L", "Test2"))
+//                .andExpect(status().isAccepted());
 //    }
 
+    @Test
+    public void deletePersonIfNotFound() throws Exception {
 
+        doReturn(Optional.empty()).when(this.personService).findById(6L);
 
-
+        mockMvc.perform(MockMvcRequestBuilders.delete("/person/", "Test"))
+                .andExpect(status().is4xxClientError());
+    }
 
 
 
