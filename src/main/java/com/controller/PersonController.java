@@ -33,7 +33,7 @@ public  class PersonController {
     @ResponseStatus(HttpStatus.OK)
     public List<Person> findAll(){
 
-        List<Person> list= personService.findAllTeam();
+        List<Person> list= personService.findAllPerson();
         if (list.isEmpty()){
             throw new NoSuchElementException("No such person founded in list of persons ");
         }

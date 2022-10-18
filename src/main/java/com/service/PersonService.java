@@ -26,9 +26,9 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public List<Person> findAllTeam(){
+    public List<Person> findAllPerson(){
 
-        return  personRepository.findAll();
+        return  this.personRepository.findAll();
 
 
     }
@@ -45,9 +45,9 @@ public class PersonService {
 
     }
 
-    public void updatePerson(Person person){
+    public Person updatePerson(Person person){
 
-         personRepository.save(person);
+         return personRepository.save(person);
 
     }
 

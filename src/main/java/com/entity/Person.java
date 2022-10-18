@@ -1,29 +1,31 @@
 package com.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Entity
 @Table(name = "Person")
 @Setter
 @Getter
 @ToString
+@NoArgsConstructor
 public class Person {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    public Person(String name, String surname, String date_of_birth) {
+        this.name = name;
+        this.surname = surname;
+        this.date_of_birth = date_of_birth;
+    }
 
     @Column(name = "name")
     @Size(min = 2,max = 48,message = "Size must be between 1 and 48 symbol")

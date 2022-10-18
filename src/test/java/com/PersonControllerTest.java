@@ -5,6 +5,9 @@ import com.entity.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repository.PersonRepository;
 import com.service.PersonService;
+import junit.framework.AssertionFailedError;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -15,26 +18,29 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.is;
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(SpringExtension.class)
@@ -43,10 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PersonControllerTest {
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
-    @Autowired
-    private PersonController personController;
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,10 +58,99 @@ public class PersonControllerTest {
     @MockBean
     private PersonService personService;
 
-
-
     @Autowired
     private Validator validator;
+
+    @Autowired
+    private PersonController personController;
+
+    @MockBean
+    private PersonRepository personRepository;
+
+
+
+    @Test
+    public  void  shouldCreateMockMvc(){
+        assertNotNull(mockMvc);
+    }
+
+    @Test
+    public void contextLoads() throws Exception {
+        assertThat(personController).isNotNull();
+    }
+
+
+
+
+    @Test
+    public  void personSuccessAdded(){
+
+        Person person = new Person();
+        person.setId(1L);
+        person.setName("Test");
+        person.setSurname("Test1");
+        person.setDate_of_birth("Size" );
+
+        personController.addNewPerson(person);
+
+        assertNotNull(personService.findById(1L));
+
+    }
+
+
+
+
+    @Test
+    public  void personListIsEmpty(){
+
+        personController.addNewPerson(null);
+        assertTrue( personService.findAllPerson().isEmpty()  );
+
+    }
+
+
+    @Test
+    public  void personNotSuccessAddedWithNullIdParameter(){
+
+        Person person = new Person();
+        person.setId(null);
+        person.setName("Test");
+        person.setSurname("Test1");
+        person.setDate_of_birth("Size" );
+
+        personController.addNewPerson(person);
+
+        assertTrue( personService.findAllPerson().isEmpty());
+
+    }
+
+
+
+    @Test
+    public void shouldReturnListOfUsers() throws Exception {
+
+
+//        Person person = new Person();
+//
+//        person.setName("Test");
+//        person.setSurname("Test1");
+//        person.setDate_of_birth("Size" );
+
+
+        when(personService.findAllPerson())
+                .thenReturn(List.of(new Person("Test","Test1","Size")));
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/person/"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name()").value("Test"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.surname()").value("Test1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.date_of_birth()").value("Size"));
+
+    }
+
+
+
 
 
 
@@ -270,6 +363,7 @@ public class PersonControllerTest {
 
 
 
+
     @Test
     public void getUserByIdTestShouldReturnTrue() throws Exception {
 
@@ -283,9 +377,9 @@ public class PersonControllerTest {
         when(personService.findById(anyLong())).thenReturn(java.util.Optional.of(person));
 
         mockMvc.perform(get("/person/9"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("Test1_2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date_of_birth").value("18 Years"))
+                .andExpect(jsonPath("$.name").value("Test1"))
+                .andExpect(jsonPath("$.surname").value("Test1_2"))
+                .andExpect(jsonPath("$.date_of_birth").value("18 Years"))
                 .andExpect(status().isOk());
 
 
@@ -312,9 +406,9 @@ public class PersonControllerTest {
         when(personService.findById(anyLong())).thenReturn(java.util.Optional.of(person));
 
         mockMvc.perform(get("/person/9"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("Test1_2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date_of_birth").value("not correct"))
+                .andExpect(jsonPath("$.name").value("Test1"))
+                .andExpect(jsonPath("$.surname").value("Test1_2"))
+                .andExpect(jsonPath("$.date_of_birth").value("not correct"))
                 .andExpect(status().isOk());
 
     }
@@ -338,9 +432,9 @@ public class PersonControllerTest {
         when(personService.findById(anyLong())).thenReturn(java.util.Optional.of(person));
 
         mockMvc.perform(get("/person/9"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("not correct"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date_of_birth").value("18 Years"))
+                .andExpect(jsonPath("$.name").value("Test1"))
+                .andExpect(jsonPath("$.surname").value("not correct"))
+                .andExpect(jsonPath("$.date_of_birth").value("18 Years"))
                 .andExpect(status().isOk());
 
     }
@@ -365,9 +459,9 @@ public class PersonControllerTest {
         when(personService.findById(anyLong())).thenReturn(java.util.Optional.of(person));
 
         mockMvc.perform(get("/person/9"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("not correct"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("Test1_2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date_of_birth").value("18 Years"))
+                .andExpect(jsonPath("$.name").value("not correct"))
+                .andExpect(jsonPath("$.surname").value("Test1_2"))
+                .andExpect(jsonPath("$.date_of_birth").value("18 Years"))
                 .andExpect(status().isOk());
 
     }
@@ -392,10 +486,10 @@ public class PersonControllerTest {
                         .content(new ObjectMapper().writeValueAsString(person))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Test1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("Test1_2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date_of_birth").value("18 Years"));
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Test1"))
+                .andExpect(jsonPath("$.surname").value("Test1_2"))
+                .andExpect(jsonPath("$.date_of_birth").value("18 Years"));
 
 
     }
@@ -418,12 +512,8 @@ public class PersonControllerTest {
         person.setDate_of_birth("55 Years");
 
 
-
-
-        Mockito.when(personService.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
-        Mockito.when(personService.addNewPerson(person)).thenReturn(person);
-
-
+        Mockito.when(personRepository.findById(RECORD_1.getId())).thenReturn(Optional.of(RECORD_1));
+        Mockito.when(personRepository.save(person)).thenReturn(person);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/person/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -432,32 +522,8 @@ public class PersonControllerTest {
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.name", is("Test2")));
-
-
-
-//
-//        PatientRecord RECORD_1 = new PatientRecord(1l, "Rayven Yor", 23, "Cebu Philippines");
-//        PatientRecord updatedRecord = PatientRecord.builder()
-//                .patientId(1l)
-//                .name("Rayven Zambo")
-//                .age(23)
-//                .address("Cebu Philippines")
-//                .build();
-//
-//        Mockito.when(patientRecordRepository.findById(RECORD_1.getPatientId())).thenReturn(Optional.of(RECORD_1));
-//        Mockito.when(patientRecordRepository.save(updatedRecord)).thenReturn(updatedRecord);
-//
-//        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/patient")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(this.mapper.writeValueAsString(updatedRecord));
-//
-//        mockMvc.perform(mockRequest)
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", notNullValue()))
-//                .andExpect(jsonPath("$.name", is("Rayven Zambo")));
-
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect((ResultMatcher) MockMvcResultMatchers.jsonPath("$.name", is("Rayven Zambo")));
 
     }
 
