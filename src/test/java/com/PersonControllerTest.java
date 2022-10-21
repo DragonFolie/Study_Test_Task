@@ -3,9 +3,7 @@ package com;
 import com.controller.PersonController;
 import com.entity.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.repository.PersonRepository;
 import com.service.PersonService;
-import junit.framework.AssertionFailedError;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,13 +11,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.util.NestedServletException;
@@ -28,8 +23,9 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.*;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -37,16 +33,14 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(PersonController.class)
 @TestPropertySource(locations = "classpath:testApplication.properties")
 public class PersonControllerTest {
 
-    @Autowired
-    private ObjectMapper mapper;
 
 
     @Autowired
@@ -61,8 +55,6 @@ public class PersonControllerTest {
     @Autowired
     private PersonController personController;
 
-    @MockBean
-    private PersonRepository personRepository;
 
     @Test
     public void shouldReturnIsOkStatus() throws Exception {
@@ -122,7 +114,7 @@ public class PersonControllerTest {
 
 
     @Test
-    public void getPersonByIdNotSuccess() throws Exception {
+    public void getPersonByIdNotSuccess() {
 
         Person person = new Person();
 
@@ -150,7 +142,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void getPersonByIdWithIllegalArguments() throws Exception {
+    public void getPersonByIdWithIllegalArguments() {
 
         Person person = new Person();
 
@@ -205,7 +197,7 @@ public class PersonControllerTest {
 
 
     @Test()
-    public void shouldReturnNoSuchElementExceptionInFindAllMethod() throws Exception {
+    public void shouldReturnNoSuchElementExceptionInFindAllMethod() {
 
 
         List<Person> list = new ArrayList<>();
@@ -342,7 +334,7 @@ public class PersonControllerTest {
 
 
     @Test
-    public void deletePersonByIdWithIllegalArgument() throws Exception {
+    public void deletePersonByIdWithIllegalArgument() {
 
         Person person = new Person();
         person.setId(5L);
@@ -427,7 +419,7 @@ public class PersonControllerTest {
 
 
     @Test
-    public void getUserByIdSizeOfPersonNameInRangeOfValueShouldReturnTrue() throws Exception {
+    public void getUserByIdSizeOfPersonNameInRangeOfValueShouldReturnTrue() {
 
         Person person = new Person();
 
@@ -443,7 +435,7 @@ public class PersonControllerTest {
 
 
     @Test
-    public void getUserByIdSizeOfPersonNameMoreThan48ShouldReturnTrue() throws Exception {
+    public void getUserByIdSizeOfPersonNameMoreThan48ShouldReturnTrue() {
 
         Person person = new Person();
 
@@ -459,7 +451,7 @@ public class PersonControllerTest {
 
 
     @Test
-    public void getUserByIdSizeOfPersonNameLessThan2ShouldReturnTrue() throws Exception {
+    public void getUserByIdSizeOfPersonNameLessThan2ShouldReturnTrue() {
 
         Person person = new Person();
 
