@@ -128,8 +128,26 @@ class PersonServiceTest {
 
 
     @Test
-    void verifyThatDeletePersonByIdInvoke() {
+    void verifyThatDeleteByIdPersonByIdInvoke() {
         personService.deletePersonById(11L);
         verify(personRepository).deleteById(11L);
     }
+
+    @Test
+    void checkThatWeDeleteByIdHaveTheSameElementWhichWeAGiveToRepository() {
+
+        ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
+        personService.updatePerson(person);
+        verify(personRepository).save(personArgumentCaptor.capture());
+
+
+        Person personTest = personArgumentCaptor.getValue();
+        assertThat(personTest).isEqualTo(person);
+        verify(personRepository).save(any());
+
+
+    }
+
+
+
 }
