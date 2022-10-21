@@ -87,6 +87,7 @@ class PersonControllerTestWOValidating {
         person.setDate_of_birth(null);
 
 
+
         NullPointerException thrown = assertThrows(
                 NullPointerException.class,
                 () -> personController.addNewPerson(person),

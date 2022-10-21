@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping(value = "/person")
 @Validated
 @Controller
-public  class PersonController {
+public class PersonController {
 
 
     private PersonService personService;
@@ -31,38 +31,36 @@ public  class PersonController {
 
     @GetMapping(path = "/")
     @ResponseStatus(HttpStatus.OK)
-    public List<Person> findAll(){
+    public List<Person> findAll() {
 
-        List<Person> list= personService.findAllPerson();
-        if (list.isEmpty()){
+        List<Person> list = personService.findAllPerson();
+        if (list.isEmpty()) {
             throw new NoSuchElementException("No such person founded in list of persons ");
         }
 
         return list;
 
     }
-
 
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Person> findById(@PathVariable("id")Long id){
+    public Optional<Person> findById(@PathVariable("id") Long id) {
 
-        Optional<Person> list= personService.findById(id);
-        if (list.isEmpty()){
+        Optional<Person> person = personService.findById(id);
+        if (person.isEmpty()) {
             throw new NoSuchElementException("No such person founded in list of persons ");
         }
 
-        return list;
+        return person;
 
 
     }
 
 
-
     @PostMapping(path = "/")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Person> addNewPerson(@Valid @RequestBody Person person ){
+    public ResponseEntity<Person> addNewPerson(@Valid @RequestBody Person person) {
 
 //        personService.addNewPerson(person);
 //        return ResponseEntity.ok().build() ;
@@ -71,32 +69,26 @@ public  class PersonController {
     }
 
 
-
     @PutMapping(path = "/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person){
+    public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person) {
 
-        personService.updatePerson(person);
-        return ResponseEntity.ok().build() ;
+//        personService.updatePerson(person);
+//        return ResponseEntity.ok().build() ;
+
+        return new ResponseEntity<>(personService.addNewPerson(person), HttpStatus.OK);
 
     }
 
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Person> deletePersonById(@PathVariable("id")Long id){
+    public ResponseEntity<Person> deletePersonById(@PathVariable("id") Long id) {
 
         personService.deletePersonById(id);
-        return ResponseEntity.ok().build() ;
+        return ResponseEntity.ok().build();
 
     }
-
-
-
-
-
-
-
 
 
 }
