@@ -28,7 +28,7 @@ public class PersonService {
 
     public List<Person> findAllPerson(){
 
-        return  this.personRepository.findAll();
+        return  personRepository.findAll();
 
 
     }

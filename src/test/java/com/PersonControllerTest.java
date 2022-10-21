@@ -3,17 +3,21 @@ package com;
 import com.controller.PersonController;
 import com.entity.Person;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.repository.PersonRepository;
 import com.service.PersonService;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -37,11 +41,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
+@RunWith(SpringRunner.class)
 @WebMvcTest(PersonController.class)
-@TestPropertySource(locations = "classpath:testApplication.properties")
 public class PersonControllerTest {
 
-
+    @MockBean
+    private PersonRepository personRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,6 +59,45 @@ public class PersonControllerTest {
 
     @Autowired
     private PersonController personController;
+
+    @Autowired
+    ApplicationContext context;
+
+    @Test
+    public void verifyFindAllPersonDirectMethodCall(){
+
+        Person person = new Person();
+        person.setId(1L);
+        person.setName("Test");
+        person.setSurname("Test1");
+        person.setDate_of_birth("Size");
+
+        Mockito.when(personRepository.findAll()).thenReturn(Arrays.asList( person));
+        List<Person> list = personRepository.findAll();
+        assertEquals(person,list.get(0));
+        Mockito.verify(personRepository).findAll();
+
+
+    }
+
+    @Test
+    public void verifyFindAllPerson() {
+        Person person = new Person();
+        person.setId(1L);
+        person.setName("Test");
+        person.setSurname("Test1");
+        person.setDate_of_birth("Size");
+
+        Mockito.when(personRepository.findAll()).thenReturn(Arrays.asList( person));
+
+
+        PersonRepository personRepositoryContext = context.getBean(PersonRepository.class);
+        List<Person> list = personRepositoryContext.findAll();
+
+        Assert.assertEquals(person, list.get(0));
+        Mockito.verify(personRepository).findAll();
+    }
+
 
 
     @Test
