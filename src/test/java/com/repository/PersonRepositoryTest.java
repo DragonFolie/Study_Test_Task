@@ -34,15 +34,13 @@ class PersonRepositoryTest {
 
 
     @AfterEach
-     void tearDown() {
+    void tearDown() {
         personRepository.deleteAll();
     }
 
 
-
-
     @Test
-    public void shouldCheckIfPersonExists(){
+    public void shouldCheckIfPersonExists() {
 
         personRepository.save(person);
         assertTrue(personRepository.existsById(1L));
@@ -61,38 +59,54 @@ class PersonRepositoryTest {
 
     }
 
-
+        /*
+                PLEASE RUN THIS TEST INDIVIDUALLY
+        */
     @Test
-        public void getPersonById() {
+    public void getPersonById() {
 
-
+            /*
+                 PLEASE RUN THIS TEST INDIVIDUALLY
+            */
 
         personRepository.save(person);
-
         Optional<Person> byId = personRepository.findById(1L);
 
         assertEquals(person.getId(), byId.get().getId());
         assertEquals(person.getName(), byId.get().getName());
 
-
-
     }
 
+
+        /*
+                PLEASE RUN THIS TEST INDIVIDUALLY
+        */
 
     @Test
     public void savePerson() {
 
+            /*
+                 PLEASE RUN THIS TEST INDIVIDUALLY
+            */
 
         personRepository.save(person);
         Person newPerson = personRepository.getById(1L);
 
         assertEquals(person.toString(), newPerson.toString());
 
-
     }
+
+
+        /*
+                PLEASE RUN THIS TEST INDIVIDUALLY
+        */
 
     @Test
     public void deleteById() {
+
+            /*
+                 PLEASE RUN THIS TEST INDIVIDUALLY
+            */
 
         personRepository.save(person);
         personRepository.deleteById(1L);
