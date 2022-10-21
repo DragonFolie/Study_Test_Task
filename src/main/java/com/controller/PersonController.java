@@ -3,6 +3,7 @@ package com.controller;
 
 import com.entity.Person;
 import com.service.PersonService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping(value = "/person")
 @Validated

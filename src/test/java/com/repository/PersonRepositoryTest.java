@@ -1,5 +1,6 @@
 package com.repository;
 
+import com.controller.PersonController;
 import com.entity.Person;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +17,11 @@ class PersonRepositoryTest {
     @Autowired
     private PersonRepository personRepository;
 
+
     private Person person = new Person();
 
     @BeforeEach
-    public void before(){
-
+    public void setUp(){
         person.setId(5L);
         person.setName("Test1");
         person.setSurname("Test1_2");
@@ -34,9 +35,7 @@ class PersonRepositoryTest {
     @Test
     public void shouldCheckIfPersonExists(){
 
-
         personRepository.save(person);
-        System.out.println(personRepository.getById(1L) +" workddd ");
         assertTrue(personRepository.existsById(1L));
 
     }
