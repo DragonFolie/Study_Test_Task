@@ -1,3 +1,5 @@
+P.S run test individually in PersonRepositoryTest
+
 Потрібно робити SpringBoot application, в якому буде всього один REST endpoint, 
 який повертає json з ім'ям, прізвищем та віком людини за id. У додатку має бути 
 один RestController, Service та Repository. У базі даних зберігатимуться дані 
