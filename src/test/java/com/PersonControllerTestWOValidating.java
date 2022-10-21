@@ -2,25 +2,17 @@ package com;
 
 import com.controller.PersonController;
 import com.entity.Person;
-import com.repository.PersonRepository;
 import com.service.PersonService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@TestPropertySource(locations="classpath:testApplication.properties")
 class PersonControllerTestWOValidating {
 
     @MockBean
