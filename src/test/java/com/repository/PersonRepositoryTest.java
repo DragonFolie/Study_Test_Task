@@ -25,7 +25,6 @@ class PersonRepositoryTest {
     public void setUp() {
         person = new Person();
 
-        person.setId(1L);
         person.setName("Test1");
         person.setSurname("Test1_2");
         person.setDate_of_birth("18 Years");
